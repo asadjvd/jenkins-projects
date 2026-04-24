@@ -3,11 +3,12 @@ pipeline{
     stages{
         stage('Clone repo'){
             steps{
-                git branch: 'main', url: 'https://github.com/prashantgohel321/DevOps-Project-Two-Tier-Flask-App.git'
+                git branch: 'main', url: 'https://github.com/asadjvd/Jenkins-Projects.git'
             }
         }
         stage('Build image'){
             steps{
+                sh 'cd /Jenkins-Projects/Two-Tier-Flask-App'
                 sh 'docker build -t flask-app .'
             }
         }
