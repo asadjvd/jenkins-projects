@@ -8,8 +8,9 @@ pipeline{
         }
         stage('Build image'){
             steps{
-                sh 'cd /Jenkins-Projects/Two-Tier-Flask-App'
-                sh 'docker build -t flask-app .'
+                dir('Two-Tier-Flask-App') {
+                     sh 'docker build -t flask-app .'
+                }
             }
         }
         stage('Deploy with docker compose'){
