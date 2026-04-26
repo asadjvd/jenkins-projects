@@ -112,7 +112,8 @@ This document outlines the step-by-step process for deploying a 2-tier web appli
 
 1.  **Install Java (OpenJDK 17):**
     ```bash
-    sudo apt install openjdk-17-jdk -y
+    sudo apt update
+    sudo apt install openjdk-21-jre -y
     sudo apt update
     sudo apt install curl gnupg ca-certificates -y
     ```
