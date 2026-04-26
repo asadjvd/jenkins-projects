@@ -114,6 +114,7 @@ This document outlines the step-by-step process for deploying a 2-tier web appli
     ```bash
     sudo apt update
     sudo apt install openjdk-21-jre -y
+    sudo apt install openjdk-21-jdk -y
     sudo apt update
     sudo apt install curl gnupg ca-certificates -y
     ```
