@@ -110,7 +110,7 @@ This document outlines the step-by-step process for deploying a two tier web app
 
 ### **5. Step 3: Jenkins Installation and Setup**
 
-1.  **Install Java (OpenJDK 17):**
+1.  **Install Java (OpenJDK-21):**
     ```bash
     sudo apt update
     sudo apt install openjdk-21-jre -y
