@@ -75,7 +75,6 @@ This document outlines the step-by-step process for deploying a two tier web app
 <img src="Images/ec2-sg.PNG">
 
 3.  **Connect to EC2 Instance:**
-   
     * Use SSH to connect to the instance's public IP address.
     ```bash
     ssh -i /path/to/key.pem ubuntu@<ec2-public-ip>
