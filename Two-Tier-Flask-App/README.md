@@ -303,7 +303,7 @@ pipeline {
     * After a successful build, your Flask application will be accessible at `http://<your-ec2-public-ip>:5000`.
     * Confirm the containers are running on the EC2 instance with `docker ps`.
   
-<img src="Images/docker ps.PNG">
+<img src="Images/docker-ps.PNG">
 <img src="Images/db_img.PNG">
 <img src="Images/flask-app.png">
 
@@ -314,7 +314,7 @@ The CI/CD pipeline is now fully operational. Any `git push` to the `master` bran
 
 
 ### **9. Infrastructure Diagram**
-<img src="Images/Architecture.png">
+<img src="Images/Infrastructure.png">
 
 
 ### **10. Work flow Diagram**
