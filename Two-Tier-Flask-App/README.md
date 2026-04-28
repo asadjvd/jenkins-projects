@@ -316,5 +316,6 @@ The CI/CD pipeline is now fully operational. Any `git push` to the `master` bran
 ### **9. Architecture Diagram**
 <img src="Images/Architecture.png">
 
+
 ### **10. Work flow Diagram**
 <img src="Images/project_workflow.png">
