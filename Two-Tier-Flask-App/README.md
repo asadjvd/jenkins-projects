@@ -1,4 +1,4 @@
-# DevOps Project Report: Automated CI/CD Pipeline for a Two Tier Flask Application on AWS
+# Automated CI/CD Pipeline for a Two Tier Flask Application on AWS
 
 ---
 
@@ -14,7 +14,7 @@
     * [Jenkinsfile](#jenkinsfile)
 7. [Step 5: Jenkins Pipeline Creation and Execution](#7-step-5-jenkins-pipeline-creation-and-execution)
 8. [Conclusion](#8-conclusion)
-9. [Architecture Diagram](#9-infrastructure-diagram)
+9. [Infrastructure Diagram](#9-Infrastructure-diagram)
 10. [Work flow Diagram](#10-work-flow-diagram)
 
 ---
