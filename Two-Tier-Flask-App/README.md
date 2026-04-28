@@ -14,13 +14,13 @@
     * [Jenkinsfile](#jenkinsfile)
 7. [Step 5: Jenkins Pipeline Creation and Execution](#7-step-5-jenkins-pipeline-creation-and-execution)
 8. [Conclusion](#8-conclusion)
-9. [Infrastructure Diagram](#9-infrastructure-diagram)
+9. [Architecture Diagram](#9-infrastructure-diagram)
 10. [Work flow Diagram](#10-work-flow-diagram)
 
 ---
 
 ### **1. Project Overview**
-This document outlines the step-by-step process for deploying a 2-tier web application (Flask + MySQL) on an AWS EC2 instance. The deployment is containerized using Docker and Docker Compose. A full CI/CD pipeline is established using Jenkins to automate the build and deployment process whenever new code is pushed to a GitHub repository.
+This document outlines the step-by-step process for deploying a two tier web application (Flask + MySQL) on an AWS EC2 instance. The deployment is containerized using Docker and Docker Compose. A full CI/CD pipeline is established using Jenkins to automate the build and deployment process whenever new code is pushed to a GitHub repository.
 
 ---
 
@@ -63,7 +63,7 @@ This document outlines the step-by-step process for deploying a 2-tier web appli
     * Select the **t2.micro** instance type for free-tier eligibility.
     * Create and assign a new key pair for SSH access.
 
-<img src="diagrams/01.png">
+<img src="Images/ec2-instance.png">
 
 2.  **Configure Security Group:**
     * Create a security group with the following inbound rules:
@@ -72,7 +72,7 @@ This document outlines the step-by-step process for deploying a 2-tier web appli
         * **Type:** Custom TCP, **Protocol:** TCP, **Port:** 5000 (for Flask), **Source:** Anywhere (0.0.0.0/0)
         * **Type:** Custom TCP, **Protocol:** TCP, **Port:** 8080 (for Jenkins), **Source:** Anywhere (0.0.0.0/0)
 
-<img src="diagrams/02.png">
+<img src="Images/ec2-sg.PNG">
 
 3.  **Connect to EC2 Instance:**
     * Use SSH to connect to the instance's public IP address.
@@ -147,7 +147,8 @@ This document outlines the step-by-step process for deploying a 2-tier web appli
     sudo usermod -aG docker jenkins
     sudo systemctl restart jenkins
     ```
-<img src="diagrams/03.png">
+    
+<img src="Images/jenkins-account.png">
 
 ---
 
@@ -165,8 +166,11 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Install system dependencies required for mysqlclient
-RUN apt-get update && apt-get install -y gcc default-libmysqlclient-dev pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+gcc \
+default-libmysqlclient-dev \
+pkg-config \
+&& rm -rf /var/lib/apt/lists/* 
 
 # Copy the requirements file to leverage Docker cache
 COPY requirements.txt .
@@ -285,28 +289,32 @@ pipeline {
     * Verify the **Script Path** is `Jenkinsfile`.
     * Save the configuration.
 
-<img src="diagrams/04.png">
+<img src="Images/pipeline-config-1.png">
+<img src="Images/pipeline-config-2.png">
 
 3.  **Run the Pipeline:**
     * Click **Build Now** to trigger the pipeline manually for the first time.
     * Monitor the execution through the **Stage View** or **Console Output**.
 
-<img src="diagrams/05.png">
-<img src="diagrams/06.png">
+<img src="Images/pipeline-overview.png">
+<img src="Images/pipeline-steps.png">
 
 4.  **Verify Deployment:**
     * After a successful build, your Flask application will be accessible at `http://<your-ec2-public-ip>:5000`.
     * Confirm the containers are running on the EC2 instance with `docker ps`.
+  
+<img src="Images/docker ps.PNG">
+<img src="Images/db_img.PNG">
+<img src="Images/flask-app.png">
 
 ---
 
 ### **8. Conclusion**
-The CI/CD pipeline is now fully operational. Any `git push` to the `main` branch of the configured GitHub repository will automatically trigger the Jenkins pipeline, which will build the new Docker image and deploy the updated application, ensuring a seamless and automated workflow from development to production.
+The CI/CD pipeline is now fully operational. Any `git push` to the `master` branch of the configured GitHub repository will automatically trigger the Jenkins pipeline, which will build the new Docker image and deploy the updated application, ensuring a seamless and automated workflow from development to production.
 
 
-### **9. Infrastructure Diagram**
-<img src="diagrams/Infrastructure.png">
-
+### **9. Architecture Diagram**
+<img src="Images/Architecture.png">
 
 ### **10. Work flow Diagram**
-<img src="diagrams/project_workflow.png">
+<img src="Images/project_workflow.png">
