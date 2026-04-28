@@ -1,10 +1,14 @@
 FROM python:3.9-slim 
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 WORKDIR /app
 
-
-RUN apt-get update && apt-get install -y gcc default-libmysqlclient-dev pkg-config && \
-rm -rf /var/lib/apt/lists/* 
+RUN apt-get update && apt-get install -y \
+gcc \
+default-libmysqlclient-dev \
+pkg-config \
+&& rm -rf /var/lib/apt/lists/* 
 
 COPY requirement.txt .
 
