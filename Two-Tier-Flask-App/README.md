@@ -1,4 +1,4 @@
-# Automated CI/CD Pipeline for a Two Tier Flask Application on AWS
+## Automated CI/CD Pipeline for a Two Tier Flask Application on AWS
 
 ---
 
