@@ -156,6 +156,8 @@ This document outlines the step-by-step process for deploying a two tier web app
 
 Ensure your GitHub repository contains the following three files.
 
+---
+
 #### **Dockerfile**
 This file defines the environment for the Flask application container.
 ```dockerfile
