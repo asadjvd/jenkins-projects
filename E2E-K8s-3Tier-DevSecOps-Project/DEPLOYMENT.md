@@ -1,6 +1,35 @@
-# Deploying the Jenkins Server on AWS
+# Project Overview
 
-This guide explains how to deploy a Jenkins server on AWS using Terraform and configure it for provisioning an Amazon EKS cluster.
+This project demonstrates how to build a complete **End-to-End DevSecOps pipeline on AWS** using modern DevOps and GitOps tools. Starting from infrastructure provisioning to application deployment and monitoring, every stage is automated to showcase a production-inspired workflow.
+
+Throughout this project, you will accomplish the following:
+
+- **AWS IAM Configuration** – Create an IAM user with the required permissions for infrastructure provisioning and deployment.
+- **Infrastructure as Code (IaC)** – Provision the Jenkins server on AWS using Terraform and configure AWS CLI for automation.
+- **Jenkins Server Setup** – Install and configure Jenkins along with essential DevSecOps tools, including Docker, Terraform, Kubectl, AWS CLI, Trivy, SonarQube Scanner, and other required dependencies.
+- **Amazon EKS Deployment** – Provision an Amazon EKS cluster using Terraform and manage it through Jenkins pipelines.
+- **AWS Load Balancer Configuration** – Deploy and configure the AWS Load Balancer Controller to automatically provision an Application Load Balancer (ALB) for Kubernetes Ingress resources.
+- **Amazon ECR Setup** – Create private Amazon Elastic Container Registry (ECR) repositories to securely store Docker images for both frontend and backend services.
+- **Argo CD Installation** – Install and configure Argo CD to enable GitOps-based continuous delivery for Kubernetes applications.
+- **SonarQube Integration** – Perform automated code quality analysis as part of the CI pipeline.
+- **Jenkins CI/CD Pipelines** – Build complete Jenkins pipelines to:
+  - Provision AWS infrastructure
+  - Build Docker images
+  - Run security and quality scans
+  - Push images to Amazon ECR
+  - Update Kubernetes manifests automatically
+- **Container Security Scanning** – Integrate Trivy and OWASP Dependency Check to identify vulnerabilities in source code and container images.
+- **Monitoring Stack Deployment** – Deploy Prometheus and Grafana using Helm to monitor the Kubernetes cluster and workloads.
+- **GitOps Application Deployment** – Use Argo CD to deploy the complete Three-Tier application consisting of:
+  - Database
+  - Backend API
+  - Frontend
+  - Kubernetes Ingress
+- **DNS Configuration** – Configure Route 53 and a custom domain to expose the application over the internet using an AWS Application Load Balancer.
+- **Persistent Storage** – Configure Persistent Volumes (PV) and Persistent Volume Claims (PVC) to ensure database data persists across pod restarts.
+- **Observability & Validation** – Monitor cluster health, application metrics, and deployment status using Grafana, Prometheus, Jenkins, and Argo CD dashboards.
+
+By the end of this project, you will have built a fully automated **production-style DevSecOps platform** that incorporates Infrastructure as Code (IaC), Continuous Integration (CI), Continuous Delivery (CD), GitOps, container security scanning, monitoring, and Kubernetes best practices on AWS.
 
 ---
 
@@ -34,7 +63,7 @@ Navigate to:
 AWS Console → IAM → Users
 ```
 
-<img src=
+<img src="Images/IAM_Dashboard.png">
 
 Click **Create User**.
 
