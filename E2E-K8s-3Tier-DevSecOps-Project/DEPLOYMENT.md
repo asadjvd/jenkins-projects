@@ -1,4 +1,4 @@
-<img width="1100" height="529" alt="image" src="https://github.com/user-attachments/assets/95492c1a-f6f5-4efb-98b9-1db1d3b50056" /># Project Overview
+# Project Overview
 
 This project demonstrates how to build a complete **End-to-End DevSecOps pipeline on AWS** using modern DevOps and GitOps tools. Starting from infrastructure provisioning to application deployment and monitoring, every stage is automated to showcase a production-inspired workflow.
 
@@ -569,3 +569,5 @@ ip-10-0-2-180.ec2.internal      Ready    <none>   3m    v1.xx.x
 ```
 
 <img src="Images/step5_eks_nodes_ready.png">
+
+---
