@@ -259,279 +259,295 @@ Default output format: json
 
 ---
 
-# Step 4: Clone the Repository
+## Step 3: Deploy the Jenkins Server (EC2) Using Terraform
 
-Clone the project repository.
+Clone the repository containing the Terraform configuration.
 
 ```bash
 git clone https://github.com/asadjvd/jenkins-projects.git
-
-cd jenkins-projects
+cd E2E-K8s-3Tier-DevSecOps-Project
 ```
+
+Navigate to the Terraform project directory.
+
+```bash
+cd Jenkins-Server-TF
+```
+
+### Configure the Terraform Backend
+
+Before deploying the infrastructure, update the `backend.tf` file with your own backend configuration.
+
+Modify the following values:
+
+- S3 Bucket Name
+- DynamoDB Table Name
+
+> **Note**
+>
+> Ensure that both the S3 bucket and DynamoDB table have already been created in your AWS account.
+
+> **Screenshot:** Configure `backend.tf`
 
 ---
 
-# Step 5: Configure Terraform Backend
+### Configure the EC2 Key Pair
 
-Before deploying, update the Terraform backend.
+Update the Terraform variables to use your existing AWS EC2 Key Pair.
 
-Example:
+Replace the default key pair name with your own.
 
-```hcl
-backend "s3" {
-  bucket         = "dev-asadjvd-tf-bucket"
-  key            = "jenkins/terraform.tfstate"
-  region         = "us-east-1"
-  dynamodb_table = "Lock-Files"
-  encrypt        = true
-}
-```
-
-Ensure that:
-
-- S3 bucket already exists
-- DynamoDB table already exists
-
-Terraform does **not** create backend resources automatically.
+> **Screenshot:** Update PEM Key Name
 
 ---
 
-# Step 6: Update the PEM Key
+### Initialize Terraform
 
-Modify the Terraform variables to use your EC2 Key Pair.
-
-Example:
-
-```hcl
-key_name = "my-keypair"
-```
-
-This key will be used to SSH into the Jenkins server after deployment.
-
----
-
-# Step 7: Initialize Terraform
-
-Initialize the backend.
+Initialize the Terraform working directory.
 
 ```bash
 terraform init
 ```
 
+> **Screenshot:** Terraform Init
+
 ---
 
-# Step 8: Validate the Configuration
+### Validate the Configuration
+
+Verify that the Terraform configuration is valid.
 
 ```bash
 terraform validate
 ```
 
+> **Screenshot:** Terraform Validate
+
 ---
 
-# Step 9: Review the Infrastructure Plan
+### Review the Execution Plan
+
+Generate an execution plan to preview the AWS resources that will be created.
 
 ```bash
-terraform plan \
--var-file=variables.tfvars
+terraform plan -var-file=variables.tfvars
 ```
 
-Terraform displays all AWS resources that will be created.
+> **Screenshot:** Terraform Plan
 
 ---
 
-# Step 10: Deploy the Jenkins Server
+### Deploy the Infrastructure
 
-Deploy the infrastructure.
+Create the Jenkins server and all associated AWS resources.
 
 ```bash
-terraform apply \
--var-file=variables.tfvars \
---auto-approve
+terraform apply -var-file=variables.tfvars --auto-approve
 ```
 
-Deployment usually completes within a few minutes.
+The deployment typically completes within **3–5 minutes**.
+
+> **Screenshot:** Terraform Apply
 
 ---
 
-# Step 11: Connect to the EC2 Instance
+### Connect to the Jenkins Server
 
-After deployment, copy the public IP or use the generated SSH command.
+After the deployment completes, navigate to the EC2 console and connect to your instance.
 
-Example:
+Copy the SSH command and execute it from your local machine.
 
 ```bash
-ssh -i my-key.pem ubuntu@<PUBLIC_IP>
+ssh -i <your-key.pem> ubuntu@<EC2_PUBLIC_IP>
 ```
+
+> **Screenshot:** Connect to EC2
 
 ---
 
-# Step 12: Verify Installed Software
+## Step 4: Configure Jenkins
 
-The Jenkins server should already have the required DevOps tools installed.
+After connecting to the EC2 instance, verify that all required DevSecOps tools have been installed successfully.
 
-Verify them using:
+Run the following commands:
 
 ```bash
 jenkins --version
-
 docker --version
-
 docker ps
-
 terraform --version
-
 kubectl version --client
-
 aws --version
-
 trivy --version
-
 eksctl version
 ```
 
+> **Screenshot:** Verify Installed Tools
+
 ---
 
-# Step 13: Access Jenkins
+### Access the Jenkins Web Interface
 
-Open your browser.
+Open your browser and navigate to:
 
 ```
 http://<EC2_PUBLIC_IP>:8080
 ```
 
-Retrieve the initial admin password.
+Retrieve the initial administrator password.
 
 ```bash
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
 
+Enter the password on the Jenkins setup page.
+
+> **Screenshot:** Jenkins Unlock Screen
+
 ---
 
-# Step 14: Complete Jenkins Setup
+### Install Jenkins Plugins
 
-1. Enter the initial admin password.
-2. Click **Install Suggested Plugins**.
-3. Wait for plugin installation.
-4. Create the administrator account.
-5. Click **Save and Finish**.
-6. Click **Start using Jenkins**.
+Click:
+
+**Install Suggested Plugins**
+
+Wait for Jenkins to complete the plugin installation.
+
+> **Screenshot:** Installing Plugins
+
+---
+
+### Complete the Initial Setup
+
+Once the installation is complete:
+
+1. Continue as the administrator (or create an admin user).
+2. Click **Save and Finish**.
+3. Click **Start Using Jenkins**.
 
 You should now see the Jenkins Dashboard.
 
----
-
-# Next Steps
-
-Once Jenkins is ready, you can:
-
-- Configure AWS credentials
-- Install additional plugins
-- Create Jenkins Pipelines
-- Provision Amazon EKS using Terraform
-- Deploy applications using Argo CD
-- Configure GitOps workflows
-- Integrate SonarQube, Trivy, and OWASP Dependency Check
+> **Screenshot:** Jenkins Dashboard
 
 ---
 
-# Useful Commands
+## Step 5: Deploy the Amazon EKS Cluster
 
-## Terraform
+Next, configure Jenkins so it can authenticate with AWS and deploy infrastructure.
 
-```bash
-terraform init
-terraform validate
-terraform plan
-terraform apply
-terraform destroy
+### Install the Required Jenkins Plugins
+
+Navigate to:
+
+```
+Manage Jenkins
+→ Plugins
+→ Available Plugins
 ```
 
-## AWS CLI
+Install the following plugins:
 
-```bash
-aws configure
-aws sts get-caller-identity
-aws ec2 describe-instances
+- AWS Credentials
+- Pipeline: AWS Steps
+
+> **Screenshot:** Install Jenkins Plugins
+
+---
+
+### Restart Jenkins
+
+After installing the plugins, restart the Jenkins service.
+
+You can either:
+
+- Select **Restart Jenkins when installation is complete**, or
+- Restart it manually.
+
+Log back into Jenkins once the restart is complete.
+
+> **Screenshot:** Restart Jenkins
+
+---
+
+### Configure AWS Credentials
+
+Navigate to:
+
+```
+Manage Jenkins
+→ Credentials
+→ System
+→ Global Credentials
 ```
 
-## Docker
+Create a new credential with:
+
+- **Kind:** AWS Credentials
+- **ID:** `sally` *(or your preferred credential ID)*
+- **AWS Access Key**
+- **AWS Secret Access Key**
+
+> **Screenshot:** AWS Credentials
+
+---
+
+### Configure GitHub Credentials
+
+If your GitHub repository is private, add GitHub credentials as well.
+
+Navigate to the same **Credentials** section and create a new credential using:
+
+- GitHub Username
+- GitHub Personal Access Token (PAT)
+
+These credentials will allow Jenkins to clone your private repository and push code changes when required.
+
+> **Screenshot:** GitHub Credentials
+
+---
+
+### Create the EKS Cluster
+
+Run the following commands to provision the Amazon EKS cluster.
 
 ```bash
-docker ps
-docker images
-docker system prune -a
+eksctl create cluster \
+  --name Three-Tier-K8s-EKS-Cluster \
+  --region us-east-1 \
+  --node-type t2.medium \
+  --nodes-min 2 \
+  --nodes-max 2
 ```
 
-## Kubernetes
+Once the cluster has been created, configure your local kubeconfig.
+
+```bash
+aws eks update-kubeconfig \
+  --region us-east-1 \
+  --name Three-Tier-K8s-EKS-Cluster
+```
+
+> **Screenshot:** EKS Cluster Creation
+
+---
+
+### Verify the Cluster
+
+Confirm that the worker nodes are in the **Ready** state.
 
 ```bash
 kubectl get nodes
-kubectl get pods -A
-kubectl get svc -A
 ```
 
----
+Example output:
 
-# Troubleshooting
-
-### Terraform backend errors
-
-Verify:
-
-- S3 bucket exists
-- DynamoDB table exists
-- AWS credentials are configured
-
----
-
-### Unable to SSH
-
-Check:
-
-- Security Group allows port **22**
-- Correct PEM file is used
-- Correct public IP address
-
----
-
-### Jenkins not accessible
-
-Ensure Security Group allows:
-
-- TCP **8080**
-
-Verify Jenkins service:
-
-```bash
-sudo systemctl status jenkins
+```text
+NAME                            STATUS   ROLES    AGE   VERSION
+ip-10-0-1-120.ec2.internal      Ready    <none>   3m    v1.xx.x
+ip-10-0-2-180.ec2.internal      Ready    <none>   3m    v1.xx.x
 ```
 
-View logs:
-
-```bash
-sudo journalctl -u jenkins -f
-```
-
----
-
-### AWS CLI authentication issues
-
-Verify credentials:
-
-```bash
-aws sts get-caller-identity
-```
-
----
-
-# Clean Up
-
-Destroy the infrastructure when it is no longer required.
-
-```bash
-terraform destroy \
--var-file=variables.tfvars \
---auto-approve
-```
+> **Screenshot:** Kubernetes Nodes Ready
 
 This removes all AWS resources created by Terraform.
