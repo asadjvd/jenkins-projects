@@ -1,4 +1,4 @@
-# Project Overview
+<img width="1100" height="529" alt="image" src="https://github.com/user-attachments/assets/95492c1a-f6f5-4efb-98b9-1db1d3b50056" /># Project Overview
 
 This project demonstrates how to build a complete **End-to-End DevSecOps pipeline on AWS** using modern DevOps and GitOps tools. Starting from infrastructure provisioning to application deployment and monitoring, every stage is automated to showcase a production-inspired workflow.
 
@@ -448,6 +448,8 @@ You should now see the Jenkins Dashboard.
 
 Next, configure Jenkins so it can authenticate with AWS and deploy infrastructure.
 
+<img src="Images/step5_aws_configure.png">
+
 ### Install the Required Jenkins Plugins
 
 Navigate to:
@@ -463,7 +465,11 @@ Install the following plugins:
 - AWS Credentials
 - Pipeline: AWS Steps
 
-> **Screenshot:** Install Jenkins Plugins
+<img src="Images/step5_jenkins_plugins.png">
+
+<img src="Images/step5_aws_step_plugin.png">
+
+<img src="Images/step5_plugin_installation.png">
 
 ---
 
@@ -478,7 +484,7 @@ You can either:
 
 Log back into Jenkins once the restart is complete.
 
-> **Screenshot:** Restart Jenkins
+<img src="Images/step5_jenkins_login.png">
 
 ---
 
@@ -500,7 +506,11 @@ Create a new credential with:
 - **AWS Access Key**
 - **AWS Secret Access Key**
 
-> **Screenshot:** AWS Credentials
+<img src="Images/step5_jenkins_credentials.png">
+
+<img src="Images/step5_jenkins_aws_credentials.png">
+
+<img src="Images/step5_creds_added.png">
 
 ---
 
@@ -538,7 +548,7 @@ aws eks update-kubeconfig \
   --name Three-Tier-K8s-EKS-Cluster
 ```
 
-> **Screenshot:** EKS Cluster Creation
+<img src="Images/step5_create_eks_cluster.png">
 
 ---
 
@@ -558,6 +568,4 @@ ip-10-0-1-120.ec2.internal      Ready    <none>   3m    v1.xx.x
 ip-10-0-2-180.ec2.internal      Ready    <none>   3m    v1.xx.x
 ```
 
-> **Screenshot:** Kubernetes Nodes Ready
-
-This removes all AWS resources created by Terraform.
+<img src="Images/step5_eks_nodes_ready.png">
