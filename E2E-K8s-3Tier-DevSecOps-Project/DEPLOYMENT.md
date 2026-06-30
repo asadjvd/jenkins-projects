@@ -105,7 +105,7 @@ Select the policy.
 
 Click **Next**.
 
-<img src="Images/set_permissions.png">
+<img src="Images/set_permission.png">
 
 ---
 
