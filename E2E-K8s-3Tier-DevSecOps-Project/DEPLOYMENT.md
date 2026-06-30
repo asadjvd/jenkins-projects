@@ -117,7 +117,7 @@ Review the configuration and click
 Create User
 ```
 
-<img src="Images/review&create.png">
+<img src="Images/review_and_create.png">
 
 ---
 
