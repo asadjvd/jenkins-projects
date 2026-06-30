@@ -34,6 +34,8 @@ Navigate to:
 AWS Console → IAM → Users
 ```
 
+<img src=
+
 Click **Create User**.
 
 ---
