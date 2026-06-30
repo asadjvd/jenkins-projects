@@ -289,6 +289,8 @@ Modify the following values:
 
 > **Screenshot:** Configure `backend.tf`
 
+<img src="Images/tf_env.png">
+
 ---
 
 ### Configure the EC2 Key Pair
