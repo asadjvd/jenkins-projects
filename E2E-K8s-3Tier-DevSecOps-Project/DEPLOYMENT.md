@@ -79,6 +79,10 @@ Example:
 jenkins-user
 ```
 
+<img src="Images/users.png">
+
+<img src="Images/specify_user_details.png">
+
 Click **Next**.
 
 ---
@@ -101,6 +105,8 @@ Select the policy.
 
 Click **Next**.
 
+<img src="Images/set_permissions.png">
+
 ---
 
 ## 4. Create User
@@ -110,6 +116,8 @@ Review the configuration and click
 ```
 Create User
 ```
+
+<img src="Images/review&create.png">
 
 ---
 
@@ -129,6 +137,8 @@ Choose
 Create Access Key
 ```
 
+<img src="Images/create_access_key.png">
+
 Select
 
 ```
@@ -139,6 +149,8 @@ Accept the confirmation checkbox.
 
 Click **Next**.
 
+<img src="Images/cli.png">
+
 Optionally provide a description.
 
 Click
@@ -147,12 +159,16 @@ Click
 Create Access Key
 ```
 
+<img src="Images/set_description.png">
+
 Save the following credentials safely:
 
 - Access Key ID
 - Secret Access Key
 
 You can also download the CSV file for future reference.
+
+<img src="Images/retrieve_access_key.png">
 
 ---
 
@@ -203,7 +219,16 @@ aws --version
 
 ---
 
-# Step 3: Configure AWS Credentials
+## Configure Terraform
+
+Edit the file /etc/environment using the below command, add the highlighted lines and add your keys in the blur space.
+
+```bash
+sudo vim /etc/environment
+```
+
+
+## Configure AWS Credentials
 
 Run:
 
