@@ -227,6 +227,9 @@ Edit the file /etc/environment using the below command, add the highlighted line
 sudo vim /etc/environment
 ```
 
+<img src="Images/tf_env.png">
+
+After making the changes, restart your machine to reflect the changes to your environment variables.
 
 ## Configure AWS Credentials
 
