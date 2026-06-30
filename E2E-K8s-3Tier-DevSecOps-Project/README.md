@@ -6,7 +6,7 @@
 [![AWS](https://img.shields.io/badge/AWS-%F0%9F%9B%A1-orange)](https://aws.amazon.com)
 [![Terraform](https://img.shields.io/badge/Terraform-%E2%9C%A8-lightgrey)](https://www.terraform.io)
 
-![Three-Tier Banner](assets/Three-Tier.gif)
+![Architecture](Images/Devopsified2.png)
 
 Welcome to the Three-Tier Web Application Deployment project! 🚀
 
@@ -47,14 +47,3 @@ The `Kubernetes-Manifests-Files` directory holds Kubernetes manifests for deploy
 - GitOps with ArgoCD - the cherry on top!
 
 📈 **The journey covered everything from setting up tools to deploying a Three-Tier app, ensuring data persistence, and implementing CI/CD pipelines.**
-
-## Getting Started
-To get started with this project, refer to our [comprehensive guide](https://amanpathakdevops.medium.com/advanced-end-to-end-devsecops-kubernetes-three-tier-project-using-aws-eks-argocd-prometheus-fbbfdb956d1a) that walks you through IAM user setup, infrastructure provisioning, CI/CD pipeline configuration, EKS cluster creation, and more.
-
-## Contributing
-We welcome contributions! If you have ideas for enhancements or find any issues, please open a pull request or file an issue.
-
-## License
-This project is licensed under the [MIT License](LICENSE).
-
-Happy Coding! 🚀
