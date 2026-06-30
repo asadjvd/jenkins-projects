@@ -268,7 +268,7 @@ git clone https://github.com/asadjvd/jenkins-projects.git
 cd E2E-K8s-3Tier-DevSecOps-Project
 ```
 
-Navigate to the Terraform project directory.
+Navigate to the Jenkins-Server-TF directory.
 
 ```bash
 cd Jenkins-Server-TF
@@ -287,9 +287,7 @@ Modify the following values:
 >
 > Ensure that both the S3 bucket and DynamoDB table have already been created in your AWS account.
 
-> **Screenshot:** Configure `backend.tf`
-
-<img src="Images/tf_env.png">
+<img src="Images/backend_tf.PNG">
 
 ---
 
@@ -299,7 +297,7 @@ Update the Terraform variables to use your existing AWS EC2 Key Pair.
 
 Replace the default key pair name with your own.
 
-> **Screenshot:** Update PEM Key Name
+<img src="Images/tfvars.PNG">
 
 ---
 
@@ -311,7 +309,7 @@ Initialize the Terraform working directory.
 terraform init
 ```
 
-> **Screenshot:** Terraform Init
+<img src="Images/tf_init.png">
 
 ---
 
@@ -323,7 +321,7 @@ Verify that the Terraform configuration is valid.
 terraform validate
 ```
 
-> **Screenshot:** Terraform Validate
+<img src="Images/tf_validate.png">
 
 ---
 
@@ -335,7 +333,7 @@ Generate an execution plan to preview the AWS resources that will be created.
 terraform plan -var-file=variables.tfvars
 ```
 
-> **Screenshot:** Terraform Plan
+<img src="Images/tf_validate.png">
 
 ---
 
@@ -349,7 +347,7 @@ terraform apply -var-file=variables.tfvars --auto-approve
 
 The deployment typically completes within **3–5 minutes**.
 
-> **Screenshot:** Terraform Apply
+<img src="Images/tf_apply.png">
 
 ---
 
@@ -363,7 +361,9 @@ Copy the SSH command and execute it from your local machine.
 ssh -i <your-key.pem> ubuntu@<EC2_PUBLIC_IP>
 ```
 
-> **Screenshot:** Connect to EC2
+<img src="Images/aws_ec2.png">
+
+<img src="Images/aws_connect.png">
 
 ---
 
@@ -384,7 +384,9 @@ trivy --version
 eksctl version
 ```
 
-> **Screenshot:** Verify Installed Tools
+<img src="Images/tools_validation.png">
+
+<img src="Images/tools_validation1.png">
 
 ---
 
@@ -404,7 +406,7 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 Enter the password on the Jenkins setup page.
 
-> **Screenshot:** Jenkins Unlock Screen
+<img src="Images/unlock_jenkins.png">
 
 ---
 
@@ -416,7 +418,9 @@ Click:
 
 Wait for Jenkins to complete the plugin installation.
 
-> **Screenshot:** Installing Plugins
+<img src="Images/install_plugins.png">
+
+<img src="Images/plugins_install.png">
 
 ---
 
@@ -430,7 +434,13 @@ Once the installation is complete:
 
 You should now see the Jenkins Dashboard.
 
-> **Screenshot:** Jenkins Dashboard
+<img src="Images/jenkins_user_create.png">
+
+<img src="Images/jenkins_url.png">
+
+<img src="Images/jenkins_ready.png">
+
+<img src="Images/jenkins_dashboard.png">
 
 ---
 
