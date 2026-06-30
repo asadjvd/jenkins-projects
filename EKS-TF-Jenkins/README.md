@@ -12,6 +12,10 @@ Infrastructure state is stored remotely in an **Amazon S3 backend**, while **Ama
 
 # Architecture
 
+<img="Images/Devopsified2_EKS.png"
+
+---
+
 ```text
                     +----------------+
                     |    Developer   |
