@@ -467,7 +467,7 @@ Install the following plugins:
 
 <img src="Images/step5_jenkins_plugins.png">
 
-<img src="Images/step5_aws_step_plugin.png">
+<img src="Images/step5_install_aws_step_plugin.png">
 
 <img src="Images/step5_plugin_installation.png">
 
