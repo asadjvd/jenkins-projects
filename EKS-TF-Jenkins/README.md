@@ -54,7 +54,7 @@ Infrastructure state is stored remotely in an **Amazon S3 backend**, while **Ama
         | Security Groups                             |
         | IAM Roles                                   |
         | Amazon EKS Control Plane                    |
-        | Managed Node Groups                         |
+        | Node Groups                                 |
         +---------------------------------------------+
 ```
 
@@ -70,21 +70,14 @@ EKS-TF-Jenkins/
 │   ├── backend.tf
 │   ├── main.tf
 │   ├── variables.tf
-│   ├── outputs.tf
-│   ├── dev.tfvars
-│   └── prod.tfvars
+│   └── dev.tfvars
 │
 └── module/
     ├── vpc.tf
-    ├── subnet.tf
-    ├── route-table.tf
-    ├── internet-gateway.tf
-    ├── nat-gateway.tf
-    ├── security-group.tf
+    ├── gather.tf
     ├── iam.tf
     ├── eks.tf
-    ├── nodegroup.tf
-    └── outputs.tf
+    └── variables.tf
 ```
 
 ---
@@ -115,7 +108,7 @@ aws sts get-caller-identity
 
 Install Jenkins and configure the following plugins:
 
-* Pipeline
+* Pipeline:AWS
 * Git
 * Terraform
 * AWS Steps Plugin
@@ -268,7 +261,7 @@ The Terraform module provisions the following AWS resources.
 * Security Groups
 * IAM Roles
 * Amazon EKS Cluster
-* Amazon EKS Managed Node Groups
+* Amazon EKS Node Groups
 * EKS Add-ons
 
 ---
