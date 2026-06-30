@@ -515,8 +515,6 @@ Navigate to the same **Credentials** section and create a new credential using:
 
 These credentials will allow Jenkins to clone your private repository and push code changes when required.
 
-> **Screenshot:** GitHub Credentials
-
 ---
 
 ### Create the EKS Cluster
