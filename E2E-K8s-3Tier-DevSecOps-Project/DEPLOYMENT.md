@@ -571,3 +571,190 @@ ip-10-0-2-180.ec2.internal      Ready    <none>   3m    v1.xx.x
 <img src="Images/step5_eks_nodes_ready.png">
 
 ---
+
+## Step 6: Configure the AWS Load Balancer Controller
+
+To expose Kubernetes applications using an **Application Load Balancer (ALB)**, install and configure the **AWS Load Balancer Controller** on your Amazon EKS cluster.
+
+---
+
+### Download the IAM Policy
+
+Download the official IAM policy required by the AWS Load Balancer Controller.
+
+```bash
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+```
+
+> **Screenshot:** Download IAM Policy
+
+---
+
+### Create the IAM Policy
+
+Create the IAM policy in your AWS account.
+
+```bash
+aws iam create-policy \
+  --policy-name AWSLoadBalancerControllerIAMPolicy \
+  --policy-document file://iam_policy.json
+```
+
+> **Screenshot:** Create IAM Policy
+
+---
+
+### Associate the IAM OIDC Provider
+
+Associate an IAM OpenID Connect (OIDC) provider with your EKS cluster. This enables Kubernetes service accounts to securely assume AWS IAM roles.
+
+```bash
+eksctl utils associate-iam-oidc-provider \
+  --region us-east-1 \
+  --cluster Three-Tier-K8s-EKS-Cluster \
+  --approve
+```
+
+> **Screenshot:** Associate OIDC Provider
+
+---
+
+### Create the IAM Service Account
+
+Create the Kubernetes service account and attach the IAM policy created in the previous step.
+
+> **Note**
+>
+> Replace `<AWS_ACCOUNT_ID>` with your AWS Account ID.
+
+```bash
+eksctl create iamserviceaccount \
+  --cluster Three-Tier-K8s-EKS-Cluster \
+  --namespace kube-system \
+  --name aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn arn:aws:iam::<AWS_ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve \
+  --region us-east-1
+```
+
+> **Screenshot:** Create IAM Service Account
+
+---
+
+### Install Helm
+
+If Helm is not already installed, install it using the following command.
+
+```bash
+sudo snap install helm --classic
+```
+
+Verify the installation.
+
+```bash
+helm version
+```
+
+---
+
+### Add the AWS EKS Helm Repository
+
+Add the official AWS Helm repository and update it.
+
+```bash
+helm repo add eks https://aws.github.io/eks-charts
+
+helm repo update
+```
+
+---
+
+### Install the AWS Load Balancer Controller
+
+Install the controller using Helm.
+
+> **Important**
+>
+> Replace `my-cluster` with the name of your EKS cluster.
+
+```bash
+helm install aws-load-balancer-controller \
+  eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=<cluster-name> \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
+```
+
+> **Screenshot:** Install AWS Load Balancer Controller
+
+---
+
+### Verify the Deployment
+
+Wait approximately **2–3 minutes**, then verify that the controller has been deployed successfully.
+
+```bash
+kubectl get deployment \
+  -n kube-system \
+  aws-load-balancer-controller
+```
+
+The deployment should show the desired number of replicas in the **READY** state.
+
+> **Screenshot:** Verify Deployment
+
+---
+
+### Troubleshooting
+
+If the controller pods are stuck in **CrashLoopBackOff** or **Error**, ensure that:
+
+- The IAM OIDC provider is correctly associated with the cluster.
+- The IAM Service Account was created successfully.
+- The correct IAM policy is attached.
+- The cluster name is correct.
+- The VPC ID and AWS Region are specified.
+
+Reinstall or upgrade the controller using:
+
+```bash
+helm upgrade -i aws-load-balancer-controller \
+  eks/aws-load-balancer-controller \
+  --namespace kube-system \
+  --set clusterName=<cluster-name> \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=<aws-region> \
+  --set vpcId=<vpc-id>
+```
+
+You can obtain your VPC ID using:
+
+```bash
+aws eks describe-cluster \
+  --name <cluster-name> \
+  --region <aws-region> \
+  --query "cluster.resourcesVpcConfig.vpcId" \
+  --output text
+```
+
+---
+
+### Validate the Pods
+
+Finally, confirm that all controller pods are running successfully.
+
+```bash
+kubectl get pods -n kube-system | grep aws-load-balancer-controller
+```
+
+Example output:
+
+```text
+aws-load-balancer-controller-xxxxxxxxxx-abcde   1/1   Running
+aws-load-balancer-controller-xxxxxxxxxx-fghij   1/1   Running
+```
+
+> **Screenshot:** AWS Load Balancer Controller Pods
