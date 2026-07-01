@@ -586,7 +586,7 @@ Download the official IAM policy required by the AWS Load Balancer Controller.
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 ```
 
-> **Screenshot:** Download IAM Policy
+<img src="Images/step6_download_iam_policy.png">
 
 ---
 
@@ -600,7 +600,7 @@ aws iam create-policy \
   --policy-document file://iam_policy.json
 ```
 
-> **Screenshot:** Create IAM Policy
+<img src="Images/step6_create_iam_policy.png">
 
 ---
 
@@ -615,7 +615,7 @@ eksctl utils associate-iam-oidc-provider \
   --approve
 ```
 
-> **Screenshot:** Associate OIDC Provider
+<img src="Images/step6_oidc_provider.png">
 
 ---
 
@@ -638,7 +638,7 @@ eksctl create iamserviceaccount \
   --region us-east-1
 ```
 
-> **Screenshot:** Create IAM Service Account
+<img src="Images/step6_create_service_account.png">
 
 ---
 
@@ -687,8 +687,6 @@ helm install aws-load-balancer-controller \
   --set serviceAccount.name=aws-load-balancer-controller
 ```
 
-> **Screenshot:** Install AWS Load Balancer Controller
-
 ---
 
 ### Verify the Deployment
@@ -703,7 +701,7 @@ kubectl get deployment \
 
 The deployment should show the desired number of replicas in the **READY** state.
 
-> **Screenshot:** Verify Deployment
+<img src="Images/step6_get_deployment.png">
 
 ---
 
@@ -757,4 +755,6 @@ aws-load-balancer-controller-xxxxxxxxxx-abcde   1/1   Running
 aws-load-balancer-controller-xxxxxxxxxx-fghij   1/1   Running
 ```
 
-> **Screenshot:** AWS Load Balancer Controller Pods
+---
+
+
