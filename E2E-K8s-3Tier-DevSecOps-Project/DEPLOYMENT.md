@@ -757,4 +757,74 @@ aws-load-balancer-controller-xxxxxxxxxx-fghij   1/1   Running
 
 ---
 
+## Step 7: Create Amazon ECR Private Repositories
+
+In this step, you will create two private Amazon Elastic Container Registry (ECR) repositories to store the Docker images for the frontend and backend applications.
+
+### 7.1 Create the Frontend Repository
+
+1. Open the **Amazon ECR** console.
+2. Click **Create repository**.
+
+<img src="Images/step7_ecr_svc.png">
+
+3. Select **Private** as the repository visibility.
+4. Enter a repository name (for example, `frontend`).
+5. Click **Create repository**.
+
+<img src="Images/step7_ecr_create_repo_frontend.png">
+
+---
+
+### 7.2 Create the Backend Repository
+
+Repeat the same process to create a repository for the backend application.
+
+1. Click **Create repository**.
+2. Select **Private**.
+3. Enter a repository name (for example, `backend`).
+4. Click **Create repository**.
+
+<img src="Images/step7_ecr_create_repo_backend.png">
+
+---
+
+### 7.3 Verify the Repositories
+
+After both repositories have been created, you should see them listed in the Amazon ECR console.
+
+<img src="Images/step7_ecr_create_repo_main_page.png">
+
+---
+
+### 7.4 Authenticate Docker with Amazon ECR
+
+Before Jenkins can push Docker images to Amazon ECR, Docker must authenticate with your AWS account.
+
+1. Open the **frontend** (or **backend**) repository.
+2. Click **View push commands**.
+3. Copy the **login command** displayed by AWS.
+
+<img src="Images/step7_ecr_push_cmd_backend.png">
+
+The login command will look similar to the following:
+
+```bash
+aws ecr get-login-password --region us-east-1 | \
+docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Replace `<AWS_ACCOUNT_ID>` with your AWS Account ID if necessary.
+
+Run the command on your Jenkins server.
+
+If authentication is successful, you should receive the following message:
+
+```text
+Login Succeeded
+```
+
+<img src="Images/step7_ecr_login_cli.png">
+
+---
 
