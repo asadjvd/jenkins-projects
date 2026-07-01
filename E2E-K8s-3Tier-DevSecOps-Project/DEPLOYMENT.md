@@ -828,3 +828,192 @@ Login Succeeded
 
 ---
 
+## Step 8: Install and Configure Argo CD
+
+In this step, you will install **Argo CD** on your Amazon EKS cluster to enable GitOps-based continuous deployment. You will also configure authentication for pulling images from your private Amazon ECR repositories.
+
+---
+
+### 8.1 Create the Application Namespace
+
+Create a dedicated namespace for deploying the three-tier application.
+
+```bash
+kubectl create namespace three-tier
+```
+
+<img src="Images/step8_namespace.png">
+
+---
+
+### 8.2 Create an Image Pull Secret for Amazon ECR
+
+Since the frontend and backend images are stored in **private Amazon ECR repositories**, Kubernetes requires an image pull secret to authenticate with ECR.
+
+> **Note**
+>
+> The `.docker/config.json` file is generated when you authenticate Docker with Amazon ECR in the previous step.
+
+Create the Kubernetes secret using the following command:
+
+```bash
+kubectl create secret generic ecr-registry-secret \
+  --from-file=.dockerconfigjson=${HOME}/.docker/config.json \
+  --type=kubernetes.io/dockerconfigjson \
+  --namespace three-tier
+```
+
+Verify that the secret was created successfully:
+
+```bash
+kubectl get secrets -n three-tier
+```
+
+<img src="Images/step8_secret.png">
+
+---
+
+### 8.3 Install Argo CD
+
+Create a separate namespace for Argo CD.
+
+```bash
+kubectl create namespace argocd
+```
+
+Install Argo CD using the official installation manifest.
+
+```bash
+kubectl apply -n argocd \
+-f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+> **Note**
+>
+> It is recommended to use the **stable** installation manifest instead of a fixed older version to receive the latest stable updates.
+
+<img src="Images/step8_create_ns_argocd.png">
+
+---
+
+### 8.4 Verify the Installation
+
+Wait a few minutes for the installation to complete, then verify that all Argo CD pods are running.
+
+```bash
+kubectl get pods -n argocd
+```
+
+All pods should display a **Running** status.
+
+<img src="Images/step8_argocd_get_pods.png">
+
+---
+
+### 8.5 Expose the Argo CD Server
+
+By default, the Argo CD API server is exposed as a ClusterIP service.
+
+Patch the service to a **LoadBalancer** so it can be accessed externally.
+
+```bash
+kubectl patch svc argocd-server \
+-n argocd \
+-p '{"spec":{"type":"LoadBalancer"}}'
+```
+
+Verify that an external Load Balancer has been created.
+
+```bash
+kubectl get svc -n argocd
+```
+
+Alternatively, you can confirm its creation from the **AWS Console → EC2 → Load Balancers**.
+
+<img src="Images/step8_argocd_patch_svc.png">
+
+<img src="Images/step8_validate_lb.png">
+
+---
+
+### 8.6 Access the Argo CD UI
+
+Copy the **EXTERNAL-IP** or **Load Balancer DNS** from the `argocd-server` service and open it in your web browser.
+
+```
+https://<ARGOCD_LOADBALANCER_DNS>
+```
+
+Because Argo CD uses a self-signed certificate by default, your browser will display a security warning.
+
+Proceed by selecting:
+
+- **Advanced**
+- **Continue to the website (unsafe)**
+
+> **Screenshot:** Browser Security Warning
+
+---
+
+### 8.7 Retrieve the Initial Admin Password
+
+Install **jq** if it is not already installed.
+
+```bash
+sudo apt update
+sudo apt install jq -y
+```
+
+Export the Argo CD server hostname.
+
+```bash
+export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq -r '.status.loadBalancer.ingress[0].hostname')
+```
+
+Retrieve the initial administrator password.
+
+```bash
+export ARGO_PWD=$(kubectl -n argocd \
+get secret argocd-initial-admin-secret \
+-o jsonpath="{.data.password}" | base64 -d)
+```
+
+Display the password.
+
+```bash
+echo $ARGO_PWD
+```
+
+> **Screenshot:** Retrieve Initial Password
+
+---
+
+### 8.8 Log in to Argo CD
+
+Open the Argo CD web interface.
+
+Use the following credentials:
+
+**Username**
+
+```text
+admin
+```
+
+**Password**
+
+```text
+<Output of the ARGO_PWD variable>
+```
+
+Click **Sign In**.
+
+> **Screenshot:** Argo CD Login Page
+
+---
+
+### 8.9 Verify the Dashboard
+
+After successful authentication, you should see the Argo CD dashboard, which will be used to deploy and manage the applications in the following steps.
+
+> **Screenshot:** Argo CD Dashboard
