@@ -1303,3 +1303,448 @@ The credentials should include:
 
 ---
 
+# Step 10: Configure Jenkins Pipelines and Monitoring
+
+In this step, we will configure Jenkins with the required plugins and tools, create the Frontend and Backend CI/CD pipelines, and set up monitoring for the Amazon EKS cluster using Prometheus and Grafana.
+
+---
+
+## 10.1 Install Required Jenkins Plugins
+
+Navigate to:
+
+**Dashboard → Manage Jenkins → Plugins → Available Plugins**
+
+Install the following plugins:
+
+- Docker
+- Docker Commons
+- Docker Pipeline
+- Docker API
+- docker-build-step
+- Eclipse Temurin Installer
+- NodeJS
+- OWASP Dependency-Check
+- SonarQube Scanner
+
+<img src="Images/step10_jenkins_plugins.png">
+
+---
+
+## 10.2 Configure Jenkins Global Tools
+
+Navigate to:
+
+**Dashboard → Manage Jenkins → Tools**
+
+Configure the following tools.
+
+### Configure JDK
+
+- Search for **JDK**
+- Add a new JDK installation
+- Configure it as shown below.
+
+<img src="step10_configure_jdk.png">
+
+---
+
+### Configure SonarQube Scanner
+
+- Search for **SonarQube Scanner**
+- Add a scanner installation
+- Configure it accordingly.
+
+<img src="step10_configure_sqscanner.png">
+
+---
+
+### Configure NodeJS
+
+- Search for **NodeJS**
+- Add a NodeJS installation.
+
+<img src="step10_configure_nodejs.png">
+
+---
+
+### Configure OWASP Dependency-Check
+
+- Search for **Dependency-Check**
+- Configure the installation.
+
+<img src="step10_configure_owasp.png">
+
+---
+
+### Configure Docker
+
+- Search for **Docker**
+- Configure the Docker installation.
+
+<img src="step10_configure_docker.png">
+
+---
+
+## 10.3 Configure SonarQube in Jenkins
+
+Navigate to:
+
+**Dashboard → Manage Jenkins → System**
+
+Scroll to **SonarQube Installations**.
+
+Configure the following:
+
+- **Name:** `sonar-server`
+- **Server URL:** `http://<jenkins-public-ip>:9000`
+- **Authentication Token:** Select the SonarQube token created in the previous step.
+
+Click **Apply** and then **Save**.
+
+<img src="step10_configure_sq_path.png">
+
+---
+
+# Create Jenkins Pipelines
+
+## 10.4 Backend Pipeline
+
+Navigate to:
+
+**Dashboard → New Item**
+
+- Enter a pipeline name
+
+<img src="step10_jenkins_new_item.png">
+
+<img src="step10_jenkins_item_name.png">
+
+- Select **Pipeline**
+  
+- Click **OK**
+
+<img src="step10_jenkins_item_save.png">
+
+Copy the Backend Jenkinsfile into the Pipeline configuration.
+
+Reference:
+
+```
+Jenkins-Pipeline-Code/Jenkinsfile-Backend
+```
+
+> **Note:** Update the Jenkinsfile according to your own repository structure, credential IDs, AWS account, and ECR repository names.
+
+Click **Apply** → **Save**.
+
+Build the pipeline.
+
+Once configured correctly, the pipeline should complete successfully.
+
+<img src="step10_jenkins_backend_pipeline_result.png">
+
+---
+
+## 10.5 Frontend Pipeline
+
+Again, create a new Pipeline.
+
+Navigate to:
+
+**Dashboard → New Item**
+
+- Enter the frontend pipeline name
+- Select **Pipeline**
+
+<img src="step10_jenkins_item_name_frontend.png">
+
+- Click **OK**
+
+<img src="step10_jenkins_item_save_frontend.png">
+
+Copy the Frontend Jenkinsfile into the Pipeline configuration.
+
+Reference:
+
+```
+Jenkins-Pipeline-Code/Jenkinsfile-Frontend
+```
+
+> **Note:** Modify the Jenkinsfile according to your own project structure, repository paths, credentials, and ECR repositories.
+
+Click **Apply** → **Save**.
+
+Run the pipeline.
+
+Once configured correctly, the build should complete successfully.
+
+<img src="step10_jenkins_frontend_pipeline_result.png">
+
+---
+
+# Monitoring Setup (Prometheus & Grafana)
+
+## 10.6 Install Prometheus and Grafana
+
+Monitoring will be implemented using **Helm**.
+
+### Add Helm Repositories
+
+```bash
+helm repo add stable https://charts.helm.sh/stable
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo add grafana https://grafana.github.io/helm-charts
+
+helm repo update
+```
+
+<img src="step10_stable_repo.png">
+
+---
+
+### Install Prometheus
+
+```bash
+helm install prometheus prometheus-community/prometheus
+```
+
+<img src="step10_install_prometheus.png">
+
+---
+
+### Install Grafana
+
+```bash
+helm install grafana grafana/grafana
+```
+
+---
+
+## 10.7 Verify Services
+
+Run:
+
+```bash
+kubectl get svc
+```
+
+This displays all services created by Prometheus and Grafana.
+
+<img src="step10_get_prometheus_svc.png">
+
+---
+
+## 10.8 Expose Prometheus
+
+Edit the Prometheus service.
+
+```bash
+kubectl edit svc stable-kube-prometheus-sta-prometheus
+```
+
+<img src="step10_edit_prometheus_svc.png">
+
+Change:
+
+```yaml
+type: ClusterIP
+```
+
+to
+
+```yaml
+type: LoadBalancer
+```
+
+Save and exit.
+
+<img src="step10_edit_prometheus_svc_lb.png">
+
+---
+
+## 10.9 Expose Grafana
+
+Edit the Grafana service.
+
+```bash
+kubectl edit svc stable-grafana
+```
+
+<img src="step10_edit_grafana_svc_cmd.png">
+
+Change:
+
+```yaml
+type: ClusterIP
+```
+
+to
+
+```yaml
+type: LoadBalancer
+```
+
+Save and exit.
+
+<img src="step10_edit_grafana_svc_lb.png">
+
+---
+
+## 10.10 Verify Load Balancers
+
+Run:
+
+```bash
+kubectl get svc
+```
+
+You should now see external Load Balancer DNS names.
+
+<img src="step10_validate_console.png">
+
+You can also verify them in the AWS Console.
+
+<img src="step10_validate_ui.png">
+
+---
+
+## 10.11 Access Prometheus
+
+Open the Prometheus dashboard:
+
+```
+http://<Prometheus-LoadBalancer-DNS>:9090
+```
+
+Navigate to:
+
+```
+Status → Targets
+```
+
+Ensure all scrape targets are healthy.
+
+<img src="step10_prometheus_ui.png">
+
+<img src="step10_prometheus_targets.png">
+
+---
+
+## 10.12 Access Grafana
+
+Open:
+
+```
+http://<Grafana-LoadBalancer-DNS>
+```
+
+Login credentials:
+
+**Username**
+
+```
+admin
+```
+
+**Password**
+
+```
+prom-operator
+```
+
+<img src="step10_grafana_ui.png">
+
+---
+
+## 10.13 Configure Prometheus as a Data Source
+
+Navigate to:
+
+```
+Connections → Data Sources
+```
+
+Select:
+
+```
+Prometheus
+```
+
+Set the URL to:
+
+```
+http://<Prometheus-LoadBalancer-DNS>:9090
+```
+
+Click:
+
+```
+Save & Test
+```
+
+A successful configuration displays a green confirmation message.
+
+<img src="step10_grafana_datasource.png">
+
+---
+
+## 10.14 Import Kubernetes Dashboard
+
+Navigate to:
+
+```
+Dashboards → New → Import
+```
+
+Import Dashboard ID:
+
+```
+6417
+```
+
+Click **Load**.
+
+Select the Prometheus data source.
+
+<img src="step10_prometheus_datasource.png">
+
+<img src="step10_prometheus_datasource_url.png">
+
+<img src="step10_prometheus_datasource_save.png">
+
+<img src="step10_grafana_dashboard.png">
+
+<img src="step10_grafana_k8s_components.png">
+
+Click **Import**.
+
+<img src="step10_grafana_import_dashboard.png">
+
+<img src="step10_import_grafana_k8s_dashboard.png">
+
+<img src="step10_select_datasource_prometheus.png">
+
+---
+
+## 10.15 Monitor Your Kubernetes Cluster
+
+After importing the dashboard, Grafana will begin displaying Kubernetes metrics including:
+
+- Cluster health
+- Node utilization
+- CPU usage
+- Memory usage
+- Pod metrics
+- Namespace metrics
+- Deployment status
+- Resource consumption
+
+Feel free to explore the available dashboards and customize them according to your monitoring requirements.
+
+<img src="step10_grafana_k8s_dashboard.png">
+
+---
+
