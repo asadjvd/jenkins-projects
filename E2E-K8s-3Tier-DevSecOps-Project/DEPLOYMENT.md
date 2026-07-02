@@ -951,9 +951,9 @@ Proceed by selecting:
 - **Advanced**
 - **Continue to the website (unsafe)**
 
-> **Screenshot:** Browser Security Warning
+<img src="Images/step8_click_advance.png">
 
----
+<img src="Images/step8_hide_advance.png">
 
 ### 8.7 Retrieve the Initial Admin Password
 
@@ -963,6 +963,8 @@ Install **jq** if it is not already installed.
 sudo apt update
 sudo apt install jq -y
 ```
+
+<img src="Images/step8_install_jq.png">
 
 Export the Argo CD server hostname.
 
@@ -978,13 +980,13 @@ get secret argocd-initial-admin-secret \
 -o jsonpath="{.data.password}" | base64 -d)
 ```
 
+<img src="Images/step8_export_var.png">
+
 Display the password.
 
 ```bash
 echo $ARGO_PWD
 ```
-
-> **Screenshot:** Retrieve Initial Password
 
 ---
 
@@ -1008,7 +1010,7 @@ admin
 
 Click **Sign In**.
 
-> **Screenshot:** Argo CD Login Page
+<img src="Images/step8_argocd_login.png">
 
 ---
 
@@ -1016,4 +1018,8 @@ Click **Sign In**.
 
 After successful authentication, you should see the Argo CD dashboard, which will be used to deploy and manage the applications in the following steps.
 
-> **Screenshot:** Argo CD Dashboard
+<img src="Images/step8_argocd_dashboard.png">
+
+---
+
+
