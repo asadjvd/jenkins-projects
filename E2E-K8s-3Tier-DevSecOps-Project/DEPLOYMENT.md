@@ -1022,4 +1022,284 @@ After successful authentication, you should see the Argo CD dashboard, which wil
 
 ---
 
+## Step 9: Configure SonarQube for the DevSecOps Pipeline
+
+In this step, you will configure **SonarQube** for static code analysis and integrate it with **Jenkins**. You will also create the required Jenkins credentials used throughout the CI/CD pipeline.
+
+---
+
+### 9.1 Access SonarQube
+
+Open your browser and navigate to your Jenkins server's public IP on port **9000**.
+
+```text
+http://<JENKINS_SERVER_PUBLIC_IP>:9000
+```
+
+Log in using the default credentials:
+
+```text
+Username: admin
+Password: admin
+```
+
+<img src="Images/step9_sq_login.png">
+
+---
+
+### 9.2 Change the Default Password
+
+After logging in for the first time, SonarQube will prompt you to change the default administrator password.
+
+Update the password and continue.
+
+<img src="Images/step9_sq_update_password.png">
+
+---
+
+### 9.3 Generate a SonarQube User Token
+
+The Jenkins pipeline authenticates with SonarQube using a user token.
+
+Navigate to:
+
+**Administration → Security → Users**
+
+<img src="Images/step9_sq_token.png">
+
+Click **Update Tokens**.
+
+<img src="Images/step9_sq_update_token.png">
+
+Click **Generate**.
+
+<img src="Images/step9_sq_generate_token.png">
+
+Provide a token name and generate the token.
+
+Copy the generated token and store it securely, as it will be required when configuring Jenkins.
+
+<img src="Images/step9_sq_copy_token.png">
+
+---
+
+### 9.4 Configure the SonarQube Webhook
+
+The webhook allows SonarQube to notify Jenkins when a code quality analysis has completed.
+
+Navigate to:
+
+**Administration → Configuration → Webhooks**
+
+<img src="Images/step9_sq_webhook.png">
+
+Click **Create**.
+
+<img src="Images/step9_sq_create_webhook.png">
+
+Configure the webhook as follows:
+
+| Field | Value |
+|--------|-------|
+| **Name** | Any descriptive name |
+| **URL** | `http://<JENKINS_SERVER_PUBLIC_IP>:8080/sonarqube-webhook/` |
+
+Click **Create**.
+
+```text
+http://<JENKINS_SERVER_PUBLIC_IP>:8080/sonarqube-webhook/
+```
+
+<img src="Images/step9_sq_create_webhook_for_jenkins.png">
+
+Verify that the webhook has been created successfully.
+
+<img src="Images/step9_sq_webhook_entry.png">
+
+---
+
+### 9.5 Create the Frontend SonarQube Project
+
+Create a project that will be used to scan the frontend application.
+
+1. Click **Create Project**.
+2. Select **Manually**.
+
+<img src="Images/step9_sq_project_dashboard.png">
+
+Provide a project name and click **Set Up**.
+
+<img src="Images/step9_sq_create_project_frontend.png">
+
+Select:
+
+- **Locally**
+- **Use Existing Token**
+
+Click **Continue**.
+
+<img src="Images/step9_sq_create_frontend_locally.png">
+
+<img src="Images/step9_sq_frontend_token.png">
+
+Choose:
+
+- **Project Type:** Other
+- **Operating System:** Linux
+
+SonarQube will generate a scanner command similar to the following:
+
+```bash
+sonar-scanner \
+  -Dsonar.projectKey=<project-key> \
+  -Dsonar.sources=. \
+  ...
+```
+
+Use the relevant parameters from this command in your Jenkins pipeline during the **SonarQube Analysis** stage.
+
+<img src="Images/step9_sq_frontend_project_cmd.png">
+
+---
+
+### 9.6 Create the Backend SonarQube Project
+
+Repeat the same process for the backend application.
+
+1. Click **Create Project**.
+
+<img src="Images/step9_sq_create_project_backend.png">
+
+2. Enter the backend project name.
+
+<img src="Images/step9_sq_create_backend_proj.png">
+
+3. Select **Locally**.
+
+<img src="Images/step9_sq_create_backend_locally.png">
+
+4. Choose **Use Existing Token**.
+
+<img src="Images/step9_sq_backend_token.png">
+ 
+5. Select **Other** and **Linux**.
+
+SonarQube will generate another scanner command.
+
+<img src="Images/step9_sq_backend_project_cmd.png">
+
+Use the required parameters in the backend Jenkins pipeline.
+
+---
+
+## 9.7 Configure Jenkins Credentials
+
+Several credentials are required by the Jenkins pipelines.
+
+Navigate to:
+
+**Dashboard → Manage Jenkins → Credentials**
+
+---
+
+### SonarQube Token
+
+Create a new credential.
+
+| Field | Value |
+|--------|-------|
+| **Kind** | Secret text |
+| **Secret** | SonarQube User Token |
+| **ID** | `sonar-token` *(or the ID used in your pipeline)* |
+
+Click **Create**.
+
+<img src="Images/step9_jenkins_sq_creds.png">
+
+---
+
+### GitHub Personal Access Token
+
+Create another credential.
+
+| Field | Value |
+|--------|-------|
+| **Kind** | Secret text |
+| **Secret** | GitHub Personal Access Token |
+| **ID** | `github` *(or the ID used in your pipeline)* |
+
+> **Note**
+>
+> Use a **GitHub Personal Access Token (PAT)** with the appropriate repository permissions, not your GitHub account password.
+
+Click **Create**.
+
+<img src="Images/step9_jenkins_github_creds.png">
+
+---
+
+### AWS Account ID
+
+Create a credential for your AWS Account ID.
+
+| Field | Value |
+|--------|-------|
+| **Kind** | Secret text |
+| **Secret** | Your AWS Account ID |
+| **ID** | `ACCOUNT_ID` |
+
+Click **Create**.
+
+<img src="Images/step9_jenkins_aws_secret.png">
+
+---
+
+### Frontend ECR Repository Name
+
+Create a credential containing the frontend repository name.
+
+| Field | Value |
+|--------|-------|
+| **Kind** | Secret text |
+| **Secret** | `frontend` |
+| **ID** | `ECR_REPO1` |
+
+Click **Create**.
+
+<img src="Images/step9_jenkins_frontend_secret.png">
+
+---
+
+### Backend ECR Repository Name
+
+Create another credential for the backend repository.
+
+| Field | Value |
+|--------|-------|
+| **Kind** | Secret text |
+| **Secret** | `backend` |
+| **ID** | `ECR_REPO2` |
+
+Click **Create**.
+
+<img src="Images/step9_jenkins_backend_secret.png">
+
+---
+
+### Verify Jenkins Credentials
+
+After creating all required credentials, verify that they appear in the Jenkins Credentials store.
+
+The credentials should include:
+
+- AWS Credentials
+- GitHub Personal Access Token
+- SonarQube Token
+- AWS Account ID
+- Frontend ECR Repository Name
+- Backend ECR Repository Name
+
+<img src="Images/step9_jenkins_all_creds.png">
+
+---
 
